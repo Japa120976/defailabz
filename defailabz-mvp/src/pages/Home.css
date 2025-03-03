@@ -1,0 +1,92 @@
+.App {
+    text-align: center;
+    background-color: #000;
+    min-height: 100vh;
+    color: white;
+  }
+  
+  .App-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+  }
+  
+  .logo-container {
+    display: flex;
+    align-items: center;
+  }
+  
+  .logo {
+    height: 30px;
+  }
+  
+  nav {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+  }
+  
+  nav a {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+  }
+  
+  .connect-wallet {
+    background-color: #0066ff;
+    color: white;
+    border: none;
+    padding: 0.7rem 1.5rem;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 500;
+  }
+  
+  .main-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 80vh;
+    padding: 0 20px;
+  }
+  
+  .title {
+    color: #00ffff;
+    font-size: 5rem;
+    margin-bottom: 1rem;
+    font-weight: bold;
+    font-family: 'Arial', sans-serif;
+  }
+  
+  .subtitle {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    font-weight: 500;
+    color: #ffffff;
+  }
+  
+  .description {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    color: #ffffff;
+    opacity: 0.9;
+  }
+  
+  .explore-button {
+    background-color: #00ffff;
+    color: black;
+    border: none;
+    padding: 1rem 2.5rem;
+    border-radius: 50px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+  }
+  
+  .explore-button:hover {
+    transform: scale(1.05);
+    background-color: #00e6e6;
+  }

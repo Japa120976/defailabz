@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta
+      name="description"
+      content="DeFaiLabz - Plataforma de IDO Inteligente com Análise Técnica e DEX"
+    />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    
+    <!-- Fontes -->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+    />
+    
+    <!-- Ícones Material -->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+    />
+
+    <!-- TradingView Widget -->
+    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+    
+    <!-- Biblioteca de Charting adicional para análises -->
+    <script src="https://cdn.jsdelivr.net/npm/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
+
+    <!-- Web3 e Ethereum -->
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.5.2/dist/web3.min.js"></script>
+    <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js"></script>
+
+    <title>DeFaiLabz</title>
+
+    <!-- Estilos globais -->
+    <style>
+      :root {
+        --primary-color: #00F5FF;
+        --primary-hover: #00D5DD;
+        --background-dark: #000000;
+        --background-light: #1A1A1A;
+        --text-primary: #FFFFFF;
+        --text-secondary: #888888;
+        --success-color: #4CAF50;
+        --error-color: #FF5252;
+        --warning-color: #FFC107;
+        --border-color: rgba(255, 255, 255, 0.1);
+        --chart-grid-color: #242424;
+        --chart-text-color: #D1D4DC;
+      }
+
+      body {
+        margin: 0;
+        padding: 0;
+        background-color: var(--background-dark);
+        font-family: 'Inter', 'Roboto', sans-serif;
+        color: var(--text-primary);
+      }
+
+      /* Estilo para o widget do TradingView */
+      .tradingview-widget-container {
+        background-color: var(--background-light) !important;
+        border-radius: 8px;
+        overflow: hidden;
+      }
+
+      /* Estilo para o container do gráfico DexAI */
+      #tradingview_chart {
+        background-color: var(--background-light) !important;
+        border-radius: 8px;
+        border: 1px solid var(--border-color);
+      }
+
+      /* Estilos para tooltips do TradingView */
+      .tv-lightweight-charts {
+        background-color: var(--background-light) !important;
+        border: 1px solid var(--border-color) !important;
+      }
+
+      /* Scrollbar personalizada */
+      ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+      }
+
+      ::-webkit-scrollbar-track {
+        background: var(--background-light);
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: var(--primary-color);
+        border-radius: 3px;
+      }
+
+      ::-webkit-scrollbar-thumb:hover {
+        background: var(--primary-hover);
+      }
+
+      /* Estilos para elementos de loading */
+      .loading-overlay {
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(4px);
+      }
+
+      /* Animações */
+      @keyframes pulse {
+        0% { opacity: 1; }
+        50% { opacity: 0.5; }
+        100% { opacity: 1; }
+      }
+
+      .pulse {
+        animation: pulse 2s infinite;
+      }
+
+      @keyframes gradient {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+      }
+
+      .gradient-bg {
+        background: linear-gradient(-45deg, #000000, #1A1A1A, #000000);
+        background-size: 400% 400%;
+        animation: gradient 15s ease infinite;
+      }
+
+      /* Estilos para cards */
+      .dex-card {
+        background: var(--background-light);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        padding: 16px;
+        transition: all 0.3s ease;
+      }
+
+      .dex-card:hover {
+        border-color: var(--primary-color);
+      }
+
+      /* Estilos para botões */
+      .dex-button {
+        background: var(--primary-color);
+        color: var(--background-dark);
+        border: none;
+        border-radius: 8px;
+        padding: 12px 24px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .dex-button:hover {
+        background: var(--primary-hover);
+        transform: translateY(-1px);
+      }
+
+      /* Estilos para inputs */
+      .dex-input {
+        background: var(--background-light);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        color: var(--text-primary);
+        padding: 12px;
+        width: 100%;
+      }
+
+      .dex-input:focus {
+        border-color: var(--primary-color);
+        outline: none;
+      }
+
+      /* Trading Panel Styles */
+      .trading-panel {
+        background: rgba(26, 26, 26, 0.9);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        backdrop-filter: blur(10px);
+      }
+
+      .order-book-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 4px 8px;
+        border-radius: 4px;
+        transition: background-color 0.2s;
+      }
+
+      .order-book-row:hover {
+        background-color: rgba(255, 255, 255, 0.05);
+      }
+
+      .bid { color: var(--success-color); }
+      .ask { color: var(--error-color); }
+
+      /* Market Depth Chart */
+      .depth-chart {
+        background: var(--background-light);
+        border-radius: 8px;
+        padding: 16px;
+      }
+
+      /* AI Analysis Panel */
+      .ai-analysis {
+        background: linear-gradient(135deg, 
+          rgba(26, 26, 26, 0.95) 0%,
+          rgba(26, 26, 26, 0.85) 100%
+        );
+        backdrop-filter: blur(10px);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+      }
+
+      .ai-confidence {
+        font-size: 24px;
+        font-weight: 700;
+        background: linear-gradient(45deg, var(--primary-color), #00ff9d);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      /* Loading Animation */
+      @keyframes shimmer {
+        0% { background-position: -1000px 0; }
+        100% { background-position: 1000px 0; }
+      }
+
+      .loading {
+        background: linear-gradient(
+          90deg,
+          rgba(255, 255, 255, 0.05) 25%,
+          rgba(255, 255, 255, 0.1) 50%,
+          rgba(255, 255, 255, 0.05) 75%
+        );
+        background-size: 1000px 100%;
+        animation: shimmer 2s infinite linear;
+      }
+
+      /* Helpers */
+      .text-success { color: var(--success-color); }
+      .text-error { color: var(--error-color); }
+      .text-warning { color: var(--warning-color); }
+      
+      .mt-1 { margin-top: 8px; }
+      .mt-2 { margin-top: 16px; }
+      .mt-3 { margin-top: 24px; }
+      .mt-4 { margin-top: 32px; }
+
+      /* Responsividade */
+      @media (max-width: 768px) {
+        .trading-panel {
+          margin-top: 16px;
+        }
+
+        #tradingview_chart {
+          height: 400px !important;
+        }
+
+        .dex-card {
+          margin-bottom: 16px;
+        }
+
+        .order-book-row {
+          font-size: 12px;
+        }
+      }
+
+      /* Dark/Light Mode Transitions */
+      body {
+        transition: background-color 0.3s ease;
+      }
+
+      * {
+        transition: border-color 0.3s ease, background-color 0.3s ease;
+      }
+    </style>
+  </head>
+  <body>
+    <noscript>Você precisa habilitar JavaScript para executar este aplicativo.</noscript>
+    <div id="root"></div>
+
+    <!-- Scripts de inicialização -->
+    <script>
+      // Detectar preferência de tema do sistema
+      if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
+        document.body.style.setProperty('--background-dark', '#FFFFFF');
+        document.body.style.setProperty('--background-light', '#F5F5F5');
+        document.body.style.setProperty('--text-primary', '#000000');
+        document.body.style.setProperty('--text-secondary', '#666666');
+      }
+    </script>
+  </body>
+</html>
