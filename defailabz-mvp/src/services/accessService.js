@@ -16,21 +16,19 @@ export const accessService = {
   },
 
   submitRegistration: async (data) => {
-    // ... resto do código permanece igual ...
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        // Simulando validações
+        if (!data.email.includes('@')) {
+          reject(new Error('Email inválido'));
+          return;
+        }
+        if (data.telegram && !data.telegram.startsWith('@')) {
+          reject(new Error('Username Telegram deve começar com @'));
+          return;
+        }
+        resolve({ success: true });
+      }, 1500);
+    });
   }
 };
-      return new Promise((resolve, reject) => {
-        setTimeout(() => {
-          // Simulando validações
-          if (!data.email.includes('@')) {
-            reject(new Error('Email inválido'));
-            return;
-          }
-          if (data.telegram && !data.telegram.startsWith('@')) {
-            reject(new Error('Username Telegram deve começar com @'));
-            return;
-          }
-          resolve({ success: true });
-        }, 1500);
-      });
-    
