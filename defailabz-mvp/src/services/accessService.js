@@ -1,33 +1,60 @@
 // Serviço para gerenciar códigos e validações
 export const accessService = {
-  validCodes: ['TEST123', 'MVP2024', 'DEFI2024'],
-
   validateCode: async (code) => {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        if (accessService.validCodes.includes(code)) {
-          resolve({ valid: true });
-        } else {
-          reject(new Error('Código inválido'));
-        }
-      }, 1000);
-    });
+    try {
+      const response = await fetch('http://localhost:5000/api/registration/validate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ code })
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Código inválido');
+      }
+
+      return await response.json();
+    } catch (error) {
+      throw new Error('Código inválido');
+    }
   },
 
   submitRegistration: async (data) => {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        // Simulando validações
-        if (!data.email.includes('@')) {
-          reject(new Error('Email inválido'));
-          return;
-        }
-        if (data.telegram && !data.telegram.startsWith('@')) {
-          reject(new Error('Username Telegram deve começar com @'));
-          return;
-        }
-        resolve({ success: true });
-      }, 1500);
-    });
+    try {
+      const response = await fetch('http://localhost:5000/api/registration/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Erro ao processar cadastro');
+      }
+
+      const result = await response.json();
+      
+      // Save access token
+      if (result.accessCode) {
+        localStorage.setItem('mvp_access_token', result.accessCode);
+      }
+
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  checkAccess: () => {
+    const token = localStorage.getItem('mvp_access_token');
+    return !!token;
+  },
+
+  logout: () => {
+    localStorage.removeItem('mvp_access_token');
   }
 };

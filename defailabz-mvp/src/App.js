@@ -24,7 +24,6 @@ import AdminDashboard from './pages/AdminDashboard';
 import { projectService } from './services/projectService';
 import { dexService } from './services/dexService';
 
-
 // Componente de Proteção MVP
 const ProtectedRoute = () => {
   const navigate = useNavigate();
@@ -32,7 +31,7 @@ const ProtectedRoute = () => {
   
   React.useEffect(() => {
     if (!hasAccess) {
-      navigate('/mvp-access');
+      navigate('/registro');
     }
   }, [hasAccess, navigate]);
 
@@ -84,18 +83,18 @@ function App() {
             </style>
             <Navbar />
             <Routes>
-              {/* Redireciona / para /mvp-access se não estiver autenticado */}
+              {/* Redireciona / para /registro se não estiver autenticado */}
               <Route 
                 path="/" 
                 element={
                   localStorage.getItem('mvp_access_token') 
                     ? <Navigate to="/home" replace /> 
-                    : <Navigate to="/mvp-access" replace />
+                    : <Navigate to="/registro" replace />
                 } 
               />
 
-              {/* Página de acesso MVP */}
-              <Route path="/mvp-access" element={<MvpAccess />} />
+              {/* Rota de registro inicial */}
+              <Route path="/registro" element={<MvpAccess />} />
 
               {/* Rotas Admin */}
               <Route path="/mvp/admin" element={<AdminAccess />} />
