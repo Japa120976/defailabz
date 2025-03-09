@@ -1,12 +1,11 @@
 // Serviço para gerenciar códigos e validações
 export const accessService = {
-  validCodes: [], // Códigos movidos para variáveis de ambiente
+  validCodes: ['TEST123', 'MVP2024', 'DEFI2024'],
 
   validateCode: async (code) => {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
-        // Simulação de validação
-        if (code === 'YOUR_CODE_HERE') { // Placeholder para teste
+        if (accessService.validCodes.includes(code)) {
           resolve({ valid: true });
         } else {
           reject(new Error('Código inválido'));
