@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Registration = require('../models/Registration');
 const crypto = require('crypto');
+const { sendConfirmationEmail, scheduleAccessCodeEmail } = require('../services/emailService');
 
 // Rota para criar novo registro
 router.post('/register', async (req, res) => {
@@ -33,9 +34,12 @@ router.post('/register', async (req, res) => {
 
     await registration.save();
 
+    // Envia email de confirmação e agenda envio do código
+    await sendConfirmationEmail(email, name);
+    scheduleAccessCodeEmail(email, name, accessCode);
+
     res.status(201).json({
-      message: 'Cadastro realizado com sucesso',
-      accessCode
+      message: 'Cadastro realizado com sucesso! Verifique seu email.'
     });
 
   } catch (error) {

@@ -21,7 +21,8 @@ const registrationSchema = new mongoose.Schema({
   },
   accessCode: {
     type: String,
-    required: true
+    required: true,
+    unique: true
   },
   isVerified: {
     type: Boolean,
@@ -30,6 +31,10 @@ const registrationSchema = new mongoose.Schema({
   registrationDate: {
     type: Date,
     default: Date.now
+  },
+  codeEmailScheduled: {
+    type: Boolean,
+    default: false
   }
 });
 

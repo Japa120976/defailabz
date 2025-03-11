@@ -1,4 +1,3 @@
-// Serviço para gerenciar códigos e validações
 export const accessService = {
   validateCode: async (code) => {
     try {
@@ -15,9 +14,15 @@ export const accessService = {
         throw new Error(error.error || 'Código inválido');
       }
 
-      return await response.json();
+      const result = await response.json();
+      if (result.valid) {
+        localStorage.setItem('mvp_access_token', code);
+        localStorage.setItem('mvp_user_data', JSON.stringify(result.user));
+      }
+
+      return result;
     } catch (error) {
-      throw new Error('Código inválido');
+      throw new Error('Erro ao validar código');
     }
   },
 
@@ -36,14 +41,7 @@ export const accessService = {
         throw new Error(error.error || 'Erro ao processar cadastro');
       }
 
-      const result = await response.json();
-      
-      // Save access token
-      if (result.accessCode) {
-        localStorage.setItem('mvp_access_token', result.accessCode);
-      }
-
-      return result;
+      return await response.json();
     } catch (error) {
       throw error;
     }
@@ -54,7 +52,13 @@ export const accessService = {
     return !!token;
   },
 
+  getUserData: () => {
+    const userData = localStorage.getItem('mvp_user_data');
+    return userData ? JSON.parse(userData) : null;
+  },
+
   logout: () => {
     localStorage.removeItem('mvp_access_token');
+    localStorage.removeItem('mvp_user_data');
   }
 };
