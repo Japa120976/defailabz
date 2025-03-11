@@ -41,7 +41,7 @@ function Home() {
               textShadow: '0 0 10px rgba(0, 245, 255, 0.5)'
             }}
           >
-            Bem-vindo ao DeFai Labz MVP
+            Bem-vindo ao DeFaiLabz MVP
           </Typography>
 
           <Typography 
@@ -62,7 +62,7 @@ function Home() {
               textAlign: 'center'
             }}
           >
-            Participe do nosso torneio de 24h e concorra a tokens $DEX!
+            Participe do nosso torneio de 24h e concorra a tokens $DEFAI!
           </Typography>
 
           <Box 
