@@ -4,19 +4,11 @@ export const accessService = {
   validateCode: async (code) => {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
-        console.log('Código recebido:', code);
+        console.log('Tentando validar código:', code);
         console.log('Códigos válidos:', accessService.validCodes);
+        console.log('É válido?', accessService.validCodes.includes(code));
         
-        // Normaliza o código removendo espaços e convertendo para maiúsculo
-        const normalizedCode = code.trim().toUpperCase();
-        const isValid = accessService.validCodes.some(
-          validCode => validCode.toUpperCase() === normalizedCode
-        );
-        
-        console.log('Código normalizado:', normalizedCode);
-        console.log('É válido?', isValid);
-
-        if (isValid) {
+        if (accessService.validCodes.includes(code)) {
           resolve({ valid: true });
         } else {
           reject(new Error('Código inválido'));
