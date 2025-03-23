@@ -59,28 +59,6 @@ function App() {
         <CssBaseline />
         <Router>
           <div style={{ paddingTop: '64px' }}>
-            <img 
-              src="/rocket-12318_256.gif" 
-              alt="Rocket"
-              style={{
-                position: 'fixed',
-                width: '100px',
-                zIndex: 9999,
-                animation: 'flyAround 20s linear infinite',
-                pointerEvents: 'none'
-              }}
-            />
-            <style>
-              {`
-                @keyframes flyAround {
-                  0% { top: 100%; left: 0; }
-                  25% { top: 0; left: 100%; }
-                  50% { top: 100%; left: 100%; }
-                  75% { top: 0; left: 0; }
-                  100% { top: 100%; left: 0; }
-                }
-              `}
-            </style>
             <Navbar />
             <Routes>
               {/* Redireciona / para /registro se não estiver autenticado */}

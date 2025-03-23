@@ -52,7 +52,7 @@ function Home() {
               textAlign: 'center'
             }}
           >
-            Você está entre os primeiros a testar nossa plataforma de trading com IA
+            Você está entre os primeiros a testar nossa plataforma de análises e trading com IA
           </Typography>
 
           <Typography 

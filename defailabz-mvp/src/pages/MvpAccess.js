@@ -65,7 +65,7 @@ const MvpAccess = () => {
       }}>
         <Box sx={{ width: '100%', p: 3, textAlign: 'center' }}>
           <Typography variant="h4" component="h1" sx={{ mb: 4 }}>
-            DeFai Labz MVP
+           Inscreva-se e teste a DefaiLabz MVP
           </Typography>
 
           {!showCodeInput ? (
