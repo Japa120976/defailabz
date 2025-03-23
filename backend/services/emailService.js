@@ -14,7 +14,7 @@ const LAUNCH_DATE = new Date('2024-03-20T10:00:00');
 const sendConfirmationEmail = async (email, name) => {
   try {
     const data = await resend.emails.send({
-      from: 'noreply@defailabz.tech',
+      from: 'defailabz@gmail.com',
       to: email,
       subject: 'Cadastro Recebido - DeFaiLabz MVP',
       html: `
@@ -37,7 +37,7 @@ const scheduleAccessCodeEmail = (email, name, accessCode) => {
   schedule.scheduleJob(LAUNCH_DATE, async () => {
     try {
       await resend.emails.send({
-        from: 'noreply@defailabz.tech',
+        from: 'defailabz@gmail.com',
         to: email,
         subject: 'Seu Código de Acesso - DeFaiLabz MVP',
         html: `
@@ -57,4 +57,36 @@ const scheduleAccessCodeEmail = (email, name, accessCode) => {
   });
 };
 
-module.exports = { sendConfirmationEmail, scheduleAccessCodeEmail };
+const sendWelcomeEmail = async (email, name) => {
+  try {
+    const data = await resend.emails.send({
+      from: 'defailabz@gmail.com',
+      to: email,
+      subject: 'Bem-vindo ao DeFaiLabz MVP',
+      html: `
+        <h1>Bem-vindo, ${name}!</h1>
+        <p>É um prazer ter você conosco no DeFaiLabz MVP.</p>
+        <p>Aqui você terá acesso a:</p>
+        <ul>
+          <li>Análises técnicas avançadas</li>
+          <li>Indicadores customizados</li>
+          <li>Carteira virtual para simulações</li>
+          <li>Suporte da nossa equipe</li>
+        </ul>
+        <p>Comece a explorar agora mesmo!</p>
+        <br>
+        <p>Atenciosamente,<br>Equipe DeFaiLabz</p>
+      `
+    });
+    return data;
+  } catch (error) {
+    console.error('Erro ao enviar email de boas-vindas:', error);
+    throw error;
+  }
+};
+
+module.exports = { 
+  sendConfirmationEmail, 
+  scheduleAccessCodeEmail,
+  sendWelcomeEmail
+};
