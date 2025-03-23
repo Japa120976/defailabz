@@ -128,9 +128,8 @@ const MvpAccess = () => {
           ) : (
             <Box component="form" onSubmit={handleCodeSubmit}>
               <Alert severity="success" sx={{ mb: 3 }}>
-                Cadastro realizado com sucesso! Insira o código de acesso que você recebeu.
-              </Alert>
-
+                Cadastro realizado com sucesso! Em breve receberá em seu e-mail seu código de acesso. 
+                </Alert>
               <TextField
                 fullWidth
                 required
