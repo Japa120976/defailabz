@@ -1,20 +1,15 @@
-require('dotenv').config();
-const { Resend } = require('resend');
-const schedule = require('node-schedule');
+import { Resend } from 'resend';
+import schedule from 'node-schedule';
 
-if (!process.env.RESEND_API_KEY) {
-  throw new Error('RESEND_API_KEY não encontrada no arquivo .env');
-}
-
-const resend = new Resend(process.env.RESEND_API_KEY);
+const resend = new Resend(process.env.REACT_APP_RESEND_API_KEY);
 
 // Data de envio dos códigos
 const LAUNCH_DATE = new Date('2024-03-20T10:00:00');
 
-const sendConfirmationEmail = async (email, name) => {
+export const sendConfirmationEmail = async (email, name) => {
   try {
     const data = await resend.emails.send({
-      from: 'defailabz@gmail.com',
+      from: 'onboarding@resend.dev',
       to: email,
       subject: 'Cadastro Recebido - DeFaiLabz MVP',
       html: `
@@ -28,16 +23,16 @@ const sendConfirmationEmail = async (email, name) => {
     });
     return data;
   } catch (error) {
-    console.error('Erro ao enviar email de confirmação:', error);
+    console.error('Erro ao enviar email:', error);
     throw error;
   }
 };
 
-const scheduleAccessCodeEmail = (email, name, accessCode) => {
+export const scheduleAccessCodeEmail = (email, name, accessCode) => {
   schedule.scheduleJob(LAUNCH_DATE, async () => {
     try {
       await resend.emails.send({
-        from: 'defailabz@gmail.com',
+        from: 'onboarding@resend.dev',
         to: email,
         subject: 'Seu Código de Acesso - DeFaiLabz MVP',
         html: `
@@ -57,10 +52,10 @@ const scheduleAccessCodeEmail = (email, name, accessCode) => {
   });
 };
 
-const sendWelcomeEmail = async (email, name) => {
+export const sendWelcomeEmail = async (email, name) => {
   try {
     const data = await resend.emails.send({
-      from: 'defailabz@gmail.com',
+      from: 'onboarding@resend.dev',
       to: email,
       subject: 'Bem-vindo ao DeFaiLabz MVP',
       html: `
@@ -83,10 +78,4 @@ const sendWelcomeEmail = async (email, name) => {
     console.error('Erro ao enviar email de boas-vindas:', error);
     throw error;
   }
-};
-
-module.exports = { 
-  sendConfirmationEmail, 
-  scheduleAccessCodeEmail,
-  sendWelcomeEmail
 };
