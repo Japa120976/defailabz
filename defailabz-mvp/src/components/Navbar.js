@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import {
   AppBar,
   Toolbar,
-  Typography,
   Button,
   Box,
   IconButton,
@@ -11,6 +10,7 @@ import {
   MenuItem,
 } from '@mui/material';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import logo from '../assets/images/logo.png';
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -34,9 +34,17 @@ const Navbar = () => {
   return (
     <AppBar position="fixed" sx={{ bgcolor: '#111' }}>
       <Toolbar>
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          DeFai Labz
-        </Typography>
+        <Box 
+          component="img"
+          src={logo}
+          alt="DeFaiLabz Logo"
+          sx={{ 
+            height: 40,
+            cursor: 'pointer',
+            marginRight: 2
+          }}
+          onClick={() => navigate('/')}
+        />
         
         {isLoggedIn && (
           <>
