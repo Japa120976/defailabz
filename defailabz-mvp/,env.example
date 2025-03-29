@@ -1,0 +1,6 @@
+REACT_APP_HF_API_KEY=your_huggingface_key_here
+REACT_APP_ETHERSCAN_API_KEY=your_etherscan_key_here
+REACT_APP_VALID_CODES=TEST123,MVP2024,DEFI2024
+GENERATE_SOURCEMAP=false
+CI=false
+REACT_APP_RESEND_API_KEY=your_resend_key_here
