@@ -1,0 +1,17 @@
+body {
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #0A0A0A;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Melhorar a legibilidade em telas escuras */
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: #0A0A0A;
+  }
+}

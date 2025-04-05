@@ -7,44 +7,41 @@ import {
   Container, 
   Paper, 
   Link,
-  Alert
+  Alert,
+  CircularProgress
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { accessService } from '../../services/accessService';
 
 function MvpRegister() {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    telegram: '',
-    reason: ''
-  });
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState(false);
-  const navigate = useNavigate();
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
+  // ... código existente para os estados ...
+  const [loading, setLoading] = useState(false);
+  const [emailStatus, setEmailStatus] = useState(null);
+  
+  // ... código existente para handleChange ...
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setError('');
     
     try {
       // Validações básicas
       if (!formData.email.includes('@')) {
         setError('Email inválido');
+        setLoading(false);
         return;
       }
 
-      if (formData.reason.length < 50) {
+      if (formData.reason && formData.reason.length < 50) {
         setError('Por favor, explique melhor seu interesse (mínimo 50 caracteres)');
+        setLoading(false);
         return;
       }
 
+      // Enviar para o backend usando o accessService
+      const result = await accessService.submitRegistration(formData);
+      
       // Salvar no localStorage para referência
       localStorage.setItem('mvpRegistration', JSON.stringify({
         ...formData,
@@ -52,8 +49,8 @@ function MvpRegister() {
       }));
 
       setSuccess(true);
-      setError('');
-
+      setEmailStatus(result.emailSent);
+      
       // Limpar o formulário
       setFormData({
         name: '',
@@ -68,103 +65,59 @@ function MvpRegister() {
       }, 3000);
 
     } catch (err) {
-      setError('Erro ao enviar o cadastro. Tente novamente.');
+      console.error('Erro no cadastro:', err);
+      setError(err.message || 'Erro ao enviar o cadastro. Tente novamente.');
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <Container maxWidth="sm">
-      <Box sx={{ marginTop: 8, marginBottom: 8 }}>
-        <Paper elevation={3} sx={{ p: 4, backgroundColor: 'rgba(255, 255, 255, 0.9)' }}>
-          <Typography component="h1" variant="h4" align="center" gutterBottom>
-            Cadastro MVP Defailabz
-          </Typography>
-
-          {success ? (
-            <Box sx={{ textAlign: 'center', my: 3 }}>
-              <Alert severity="success" sx={{ mb: 2 }}>
-                Cadastro recebido com sucesso!
-              </Alert>
-              <Typography variant="body1">
-                Analisaremos seu cadastro e entraremos em contato em breve.
-              </Typography>
-            </Box>
-          ) : (
-            <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                label="Nome Completo"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-              />
-
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                label="Email"
-                name="email"
-                type="email"
-                value={formData.email}
-                onChange={handleChange}
-              />
-
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                label="Telegram"
-                name="telegram"
-                value={formData.telegram}
-                onChange={handleChange}
-              />
-
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                label="Por que você quer participar do MVP?"
-                name="reason"
-                multiline
-                rows={4}
-                value={formData.reason}
-                onChange={handleChange}
-              />
-
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                sx={{ 
-                  mt: 3, 
-                  mb: 2,
-                  backgroundColor: '#1a237e',
-                  '&:hover': {
-                    backgroundColor: '#0d47a1',
-                  }
-                }}
-              >
-                Enviar Cadastro
-              </Button>
-
-              {error && (
-                <Alert severity="error" sx={{ mt: 2 }}>
-                  {error}
-                </Alert>
-              )}
-
-              <Box sx={{ mt: 2, textAlign: 'center' }}>
-                <Link href="/mvp" variant="body2">
-                  Já tem um código de acesso? Faça login
-                </Link>
-              </Box>
-            </Box>
+      {/* ... código existente ... */}
+      
+      {success ? (
+        <Box sx={{ textAlign: 'center', my: 3 }}>
+          <Alert severity="success" sx={{ mb: 2 }}>
+            Cadastro recebido com sucesso!
+          </Alert>
+          
+          {emailStatus === false && (
+            <Alert severity="warning" sx={{ mb: 2 }}>
+              Seu cadastro foi salvo, mas houve um problema ao enviar o email de confirmação.
+            </Alert>
           )}
-        </Paper>
-      </Box>
+          
+          <Typography variant="body1">
+            Analisaremos seu cadastro e entraremos em contato em breve.
+          </Typography>
+        </Box>
+      ) : (
+        <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
+          {/* ... campos de formulário existentes ... */}
+
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            disabled={loading}
+            sx={{ 
+              mt: 3, 
+              mb: 2,
+              backgroundColor: '#1a237e',
+              '&:hover': {
+                backgroundColor: '#0d47a1',
+              }
+            }}
+          >
+            {loading ? <CircularProgress size={24} color="inherit" /> : 'Enviar Cadastro'}
+          </Button>
+
+          {/* ... resto do código ... */}
+        </Box>
+      )}
+      
+      {/* ... código existente ... */}
     </Container>
   );
 }

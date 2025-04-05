@@ -4,14 +4,14 @@ async function testEmails() {
   try {
     // Teste do email de confirmação
     await sendConfirmationEmail(
-      'defailabz@gmail.com',
+      'sergiohirakauva@gmail.com',
       'Usuário Teste'
     );
     console.log('Email de confirmação enviado com sucesso!');
 
     // Teste do email com código (agendado)
     scheduleAccessCodeEmail(
-      'defailabz@gmail.com',
+      'sergiohirakauva@gmail.com',
       'Usuário Teste',
       'TEST123'
     );

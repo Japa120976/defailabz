@@ -1,12 +1,34 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const { Resend } = require('resend');
 const mongoose = require('mongoose');
+const nodemailer = require('nodemailer');
 const User = require('./models/User');
 
 const app = express();
-const resend = new Resend(process.env.RESEND_API_KEY);
+
+// Configuração do transporte SMTP para o Titan Email
+const transporter = nodemailer.createTransport({
+  host: 'smtp.titan.email',
+  port: 465,
+  secure: true,
+  auth: {
+    user: 'support@defailabz.tech',
+    pass: process.env.TITAN_EMAIL_PASSWORD
+  },
+  tls: {
+    rejectUnauthorized: false
+  }
+});
+
+// Verificar conexão com o servidor SMTP
+transporter.verify(function(error, success) {
+  if (error) {
+    console.error('Erro na verificação do servidor SMTP:', error);
+  } else {
+    console.log('Servidor SMTP está pronto para enviar mensagens');
+  }
+});
 
 // Conectar ao MongoDB
 mongoose.connect(process.env.MONGODB_URI, {
@@ -52,26 +74,75 @@ app.post('/api/register', async (req, res) => {
     await user.save();
     console.log('Usuário salvo no banco:', user);
     
-    // Enviar email de confirmação
+    // Enviar email de confirmação usando Titan Email
     console.log('Tentando enviar email para:', email);
-    const emailResponse = await resend.emails.send({
-      from: 'onboarding@resend.dev',
-      to: email,
-      subject: 'Cadastro Recebido - DeFaiLabz MVP',
-      html: `
-        <h1>Olá ${name}!</h1>
-        <p>Recebemos seu cadastro para o DeFaiLabz MVP.</p>
-        <p>Em breve você receberá mais informações.</p>
-        <br>
-        <p>Atenciosamente,<br>Equipe DeFaiLabz</p>
-      `
-    });
-    console.log('Resposta do envio de email:', emailResponse);
-
-    res.json({ success: true });
+    try {
+      const info = await transporter.sendMail({
+        from: '"DeFaiLabz" <support@defailabz.tech>',
+        to: email,
+        subject: 'Cadastro Recebido - DeFaiLabz MVP',
+        html: `
+          <h1>Olá ${name}!</h1>
+          <p>Recebemos seu cadastro para o DeFaiLabz MVP.</p>
+          <p>Em breve você receberá mais informações.</p>
+          <br>
+          <p>Atenciosamente,<br>Equipe DeFaiLabz</p>
+        `
+      });
+      console.log('Email enviado com sucesso:', info.messageId);
+      res.json({ success: true, emailSent: true });
+    } catch (emailError) {
+      console.error('Erro ao enviar email:', emailError);
+      // Mesmo com erro no email, consideramos o cadastro como sucesso
+      res.json({ 
+        success: true, 
+        emailSent: false, 
+        emailError: emailError.message 
+      });
+    }
   } catch (error) {
     console.error('Erro detalhado:', error);
     res.status(500).json({ message: error.message });
+  }
+});
+
+// Rota para testar o envio de email
+app.post('/api/test-email', async (req, res) => {
+  try {
+    const { email, name } = req.body;
+    
+    if (!email) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Email é obrigatório' 
+      });
+    }
+    
+    const info = await transporter.sendMail({
+      from: '"DeFaiLabz Test" <support@defailabz.tech>',
+      to: email,
+      subject: 'Teste de Configuração de Email',
+      html: `
+        <h1>Teste de Email</h1>
+        <p>Este é um email de teste para verificar a configuração do servidor SMTP.</p>
+        <p>Se você está vendo esta mensagem, a configuração está funcionando corretamente!</p>
+        <p>Data e hora do teste: ${new Date().toLocaleString()}</p>
+      `
+    });
+    
+    console.log('Email de teste enviado com sucesso:', info.messageId);
+    
+    res.json({
+      success: true,
+      message: 'Email de teste enviado com sucesso',
+      messageId: info.messageId
+    });
+  } catch (error) {
+    console.error('Erro no teste de email:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: `Falha no teste: ${error.message}` 
+    });
   }
 });
 
